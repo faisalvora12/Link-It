@@ -1,5 +1,6 @@
 const http = require('http');
 const firebase = require('firebase');
+var fs = require('fs');
 
 firebase.initializeApp({
 //	credential:  firebase.credential.applicationDefault(),
@@ -9,7 +10,13 @@ firebase.initializeApp({
 const port = 3000;
 const requestHandler = (request, response) => {
 	if(request.url == '/'){
-		response.end('GET /');
+
+		//response.end('GET /');
+        fs.readFile("main.html","utf-8", function (err,data) {
+           if(err)
+               throw err;
+           response.end(data);
+        });
 		firebase.database().ref('Iron Man').set('adrian');
 	}
 	else
