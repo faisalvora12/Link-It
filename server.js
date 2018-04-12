@@ -1,14 +1,20 @@
 const http = require('http');
 const firebase = require('firebase');
 var fs = require('fs');
+const express = require('express');
+const app = express();
+const port = 3000;
+
+
 
 firebase.initializeApp({
 //	credential:  firebase.credential.applicationDefault(),
 	databaseURL: 'https://link-it-252.firebaseio.com',
 });
 
-const port = 3000;
-const requestHandler = (request, response) => {
+
+
+/*const requestHandler = (request, response) => {
 	if(request.url == '/'){
 
 		//response.end('GET /');
@@ -29,4 +35,16 @@ server.listen(port, (err) => {
 		return console.log('something bad happened', err);
 	}
 	console.log('server is listening on port ' + port);
-});
+});*/
+
+app.get('/',(request,response)=>{
+    response.send('Using express');
+})
+
+app.listen(port, (err) => {
+    if (err) {
+        return console.log('something bad happened', err)
+    }
+
+    console.log(`server is listening on ${port}`)
+})
