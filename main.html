@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+  <!--  The libraries and APIs    -->
+  <!-- javascript library-->
  <script type="text/javascript" src="https://cdn.rawgit.com/asvd/dragscroll/master/dragscroll.js"></script>
     
 <!-- Latest compiled and minified CSS -->
@@ -10,18 +12,30 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <!-- Latest compiled JavaScript -->
+<!-- bootstrap -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- The libraries and APIs definition end -->
+<!-- meta definitions -->
 <meta charset="utf-8"> 
 <meta name="viewport" content="width=devide-width,initial-scale=1.0">
+<!-- meta definitions end -->
+
+<!-- external css link to main.css -->
 <link rel="stylesheet" type="text/css" href="main.css">
  
+ <!-- link for to main.js -->
+<script src="main.js"></script>
+
+<body>
+
+<!--        Web Page Coding            -->
 <div class="container-fluid">
  
 	<div class="row" style="border: 2px solid black">
 		<div class="col-xs-12 col-md-8 col-lg-8" style="border: 2px solid black">
   		    <div class="panel panel-primary"> 
   		        <div class="panel-heading"><i style="margin-left: 18px"><b>GAME</b></i></div>
-   		         <div class="panel-body" style="min-height: 430px;overflow-y: scroll;">fdoinfds sdofjohisdfj
+   		         <div class="panel-body" style="min-height: 430px;overflow-y: scroll;word-wrap: break-word">fdoinfds
         	    </div>
        		</div>
     	</div>
@@ -29,7 +43,10 @@
     	     <div class="col-xs-12 col-md-4 col-lg-4" style="border: 2px solid black">
     	     	 <div class="panel panel-success"> 
   		        <div class="panel-heading" ><i style="margin-left: 18px"><b>HI USERNAME</b></i></div>
-   		         <div class="panel-body" style="min-height: 430px">Username:<br>Password:
+   		         <div class="panel-body" style="min-height: 430px;word-wrap: break-word">
+   		         	<div>
+   		         		You have <span class="label label-default">New</span>
+   		            </div>
         	    </div>
        		</div>
     	     </div>	 	
@@ -39,9 +56,8 @@
     	 <div class="footer" class="main" style="border: 2px solid black; position: fixed;height: 50px">
      	<H5 style="margin-left: 18px"><i><b style="color: white;background-color: grey">LINK IT!</b></i>
      	<input type="button" value="Menu" style="float: right;margin-right: 18px">
-     	<input type="button" value="Hint" style="float: right;margin-right: 18px;">
-     	<input type="button" class="mybutton" name="music" style="float: right">
- 
+     	<input type="button" onClick="hint()" value="Hint" style="float: right;margin-right: 18px">
+     	<input type="button" onClick="music()" class="mybutton" name="music" style="float: right">
 	    </H5>
 	    </div>
     </div>
