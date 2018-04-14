@@ -5,6 +5,7 @@ const express = require('express');
 const ArrayList = require('array-list');
 const Graph = require('graph-data-structure');
 const rn = require('random-number');
+const path = require('path');
 
 var graph = Graph();
 const app = express();
@@ -55,10 +56,11 @@ var interval = setInterval(function (){
     clearInterval(interval);
 },300);
 
-
+var html = fs.readFileSync('main.html');
 
 app.get('/',(request,response)=>{
-    response.send('Using express');
+    response.writeHead(200,{'Content-Type': 'text/html'});
+    response.end(html);
 });
 
 app.listen(port, (err) => {
