@@ -70,15 +70,17 @@ var interval = setInterval(function (){
     clearInterval(interval);
 },350);
 
-var html = fs.readFileSync('main.html','utf-8')
+var html = fs.readFileSync('main.html');
+
+app.use(express.static(__dirname));
 
 app.get('/',(request,response)=>{
-    response.writeHead(200,{'Content-Type' : 'text/html'});
-    response.end(html);
+    response.sendFile(path.join(__dirname +'/main.html'));
 });
 
 
 app.get('/hello',(request,reqponse,next) =>{
+    console.log('Test');
    var variable = request.query.name;
    response.json({'status' : 200, 'message-body' : 'success'});
 });
