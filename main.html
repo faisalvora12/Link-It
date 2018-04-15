@@ -30,37 +30,51 @@
 
 <!--        Web Page Coding            -->
 <div class="container-fluid">
- 
-	<div class="row" style="border: 2px solid black">
+ 	
+     	 <div class="row" class="header" style="border: 2px solid black;height: 50px">
+    	<H5 style="margin-left: 18px"><i><b style="color: white;background-color: grey">LINK IT!</b></i>
+    	<input type="button" value="Menu" style="float: right;margin-right: 18px">
+    	<input type="button" onClick="hint()" value="Hint" style="float: right;margin-right: 18px">
+    	<input type="button" onClick="music()" class="mybutton" name="music" style="float: right">
+		</H5>
+	</div>
+ 	
+	<div class="row" class="wrap" style="border: 2px solid black">
 		<div class="col-xs-12 col-md-8 col-lg-8" style="border: 2px solid black">
   		    <div class="panel panel-primary"> 
   		        <div class="panel-heading"><i style="margin-left: 18px"><b>GAME</b></i></div>
-   		         <div class="panel-body" style="min-height: 430px;overflow-y: scroll;word-wrap: break-word">fdoinfds
+   		         <div class="panel-body" style="min-height: 430px;overflow-y: scroll;word-wrap: break-word">fds
         	    </div>
        		</div>
     	</div>
     	<div>
     	     <div class="col-xs-12 col-md-4 col-lg-4" style="border: 2px solid black">
     	     	 <div class="panel panel-success"> 
-  		        <div class="panel-heading" ><i style="margin-left: 18px"><b>HI USERNAME</b></i></div>
-   		         <div class="panel-body" style="min-height: 430px;word-wrap: break-word">
-   		         	<div>
-   		         		You have <span class="label label-default">New</span>
-   		            </div>
-        	    </div>
-       		</div>
-    	     </div>	 	
+  		             <div class="panel-heading text-center" ><i style="margin-left: 18px"><b>HI <label id="username" style="max-width: 140px; word-wrap: break-word">USERNAME</label></b></i></div>
+   		             <div class="panel-body" style="min-height: 430px;word-wrap: break-word">
+   		                 <div style="text-align: center">
+   		         		 You have <label id="myLabel" style="max-width: 140px; word-wrap: break-word">New</label> Points
+   		                 </div>
+   		                 <br><br>
+   		                 <div class="form-group">
+   		                     <div style="text-align:center">
+   					 	     <label for="inputdefault">Enter your suggestion</label>
+   					 	     <input  id="inputsm" type="text" value="Eg:Will Smith" class="form-control input-sm"><br>
+ 				             <input type="button" onClick="enter()" value="ENTER">
+ 				     	     </div>
+ 					     </div>
+                       	<div class="panel panel-primary"> 
+  		                     <div class="panel-heading text-center"><i style="margin-left: 18px"><b>SCORECARD</b></i>
+  		                     </div>
+   		                     <div class="panel-body" style="min-height: 100px;overflow-y: scroll;word-wrap: break-word">fdg
+        	                 </div>
+       		            </div>
+        	         </div>
+       		    </div>
+    	    </div>	 	
     	</div>
 	</div>
-	 <div class="wrap">
-    	 <div class="footer" class="main" style="border: 2px solid black; position: fixed;height: 50px">
-     	<H5 style="margin-left: 18px"><i><b style="color: white;background-color: grey">LINK IT!</b></i>
-     	<input type="button" value="Menu" style="float: right;margin-right: 18px">
-     	<input type="button" onClick="hint()" value="Hint" style="float: right;margin-right: 18px">
-     	<input type="button" onClick="music()" class="mybutton" name="music" style="float: right">
-	    </H5>
-	    </div>
-    </div>
-</div>
-	</body>
+	 
+ </div>
+ </body>
 </html>
