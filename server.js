@@ -6,12 +6,16 @@ const ArrayList = require('array-list');
 const Graph = require('graph-data-structure');
 const rn = require('random-number');
 const path = require('path');
+/*==============================================================================================================
 
+             Declaration and Initialization of Variables
+
+ ================================================================================================================= */
+var loginMap = new Map();
 var graph = Graph();
 const app = express();
 const port = 3000;
 firebase.initializeApp({
-//	credential:  firebase.credential.applicationDefault(),
 	databaseURL: 'https://link-it-252.firebaseio.com',
 
 });
@@ -22,6 +26,15 @@ var categRef = firebase.database().ref();
 
 var categList = [];
 var numCategs = 0;
+
+var gen = rn.generator({
+    integer: true
+});
+/*==============================================================================================================
+
+            Creating category list from firebase
+
+================================================================================================================= */
 categRef.once("value")
     .then(function(snapshot) {
         snapshot.forEach(function(childSnapshot) {
@@ -31,10 +44,11 @@ categRef.once("value")
         });
     });
 
-var gen = rn.generator({
-     integer: true
-});
+/*==============================================================================================================
 
+            Populating loginMap and getting randomly generated category map for user to play
+
+ ================================================================================================================= */
 var interval = setInterval(function (){
     categoryName = categList[gen(0,numCategs-1,true)];
     console.log("Selected category: " + categoryName);
@@ -44,7 +58,7 @@ var interval = setInterval(function (){
             snapshot.forEach(function(childSnapshot) {
                 var key = childSnapshot.key;
                 if(categoryName == "Login") {
-                    console.log("That stuff is confidential..")
+                    loginMap.set(key,childSnapshot.val());
                 }
                 else
                 {
@@ -54,14 +68,16 @@ var interval = setInterval(function (){
             });
         });
     clearInterval(interval);
-},300);
+},350);
 
-var html = fs.readFileSync('main.html');
+var html = fs.readFileSync('main.html','utf-8')
 
 app.get('/',(request,response)=>{
-    response.writeHead(200,{'Content-Type': 'text/html'});
+    response.writeHead(200,{'Content-Type' : 'text/html'});
     response.end(html);
 });
+
+
 
 app.listen(port, (err) => {
     if (err) {
