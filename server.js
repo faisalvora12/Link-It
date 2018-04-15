@@ -78,11 +78,15 @@ app.get('/',(request,response)=>{
 });
 
 
+app.get('/hello',(request,reqponse,next) =>{
+   var variable = request.query.name;
+   response.json({'status' : 200, 'message-body' : 'success'});
+});
 
 app.listen(port, (err) => {
     if (err) {
         return console.log('something bad happened', err)
     }
 
-    console.log(`server is listening on ${port}`)
+    console.log(`server is listening on ${port}`);
 });
