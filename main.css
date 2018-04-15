@@ -1,7 +1,7 @@
 
 .mybutton{
     display: block;
-    background:url(music1.png) no-repeat;
+    background:url(C:music1.png) no-repeat;
     cursor:pointer;
     border:none;
     width:27px;
@@ -25,12 +25,21 @@ body > .wrap{
 }
 
 .wrap p{
-  margin: 20px 0;
+  margin: 20px 0
 }
 .footer {
     position: fixed;
     left: 0;
     bottom: 0;
+    width: 100%;
+    text-align: left;
+    opacity: 1; 
+  background-color: rgba(0,0,1,0.6);
+}
+.header {
+    position: sticky;
+    left: 0;
+    top: 0;
     width: 100%;
     text-align: left;
     opacity: 1; 
