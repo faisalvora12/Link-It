@@ -1,6 +1,6 @@
 
 var songcount=0;
-var audio = new Audio('C:boko.mp3');
+var audio = new Audio('boko.mp3');
 var x;
 function myFunction() {
     document.getElementById("demo").innerHTML = "Hello World";
@@ -11,15 +11,16 @@ function hint() {
 function enter() {
     x = document.getElementById("inputsm").value;
     document.getElementById("myLabel").innerHTML = x;
-    $http.post('/hello', {params: {name: x}})
-    .success(
-        function(success){
-            console.log(success)
-        })
-    .error(
-        function(error){
-            console.log(error)
-        });
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function() {
+        if (request.readyState == XMLHttpRequest.DONE) {
+            alert(request.responseText);
+        }
+    };
+    request.open('POST', 'http://localhost:3000/hello', true);
+    request.send(x);
+
+
 }
 function music() {
   		songcount=songcount+1;
