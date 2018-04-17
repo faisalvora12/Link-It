@@ -1,29 +1,37 @@
 var username;
 var password;
-function signin(){
-  login =document.getElement();
-
-
-  username = document.getElementById("username").value;
-  password = document.getElementById("password").value;
-  var params = JSON.stringify({params: {name: username}, {pass: password});
-/*  $http.post('/hello', {params: {name: username}, {pass: password})
-    .success(
-        function(success){
-            console.log(success)
-        })
-    .error(
-        function(error){
-            console.log(error)
-        });*/
-
-  var request = new XMLHttpRequest();
-    request.onreadystatechange = function() {
-        if (request.readyState == 4 && request.status == 200) {
-            alert(request.responseText);
+function signin() {
+    username = document.getElementById("username").value.toString();
+    password = document.getElementById("password").value.toString();
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (request.readyState === 4 && request.status === 200) {
+            location.replace('menu.html')
+        }
+        else if(request.status === 404 && request.readyState===4)
+        {
+            alert('Invalid username or password');
         }
     };
-    request.open('POST', 'http://localhost:3000/login', true);
-    request.send(params);
+    request.open('POST', 'http://localhost:3000/login/'+username.toString()+"/"+password.toString(), true);
+    request.send();
+
+}
+
+function signup() {
+    username = document.getElementById("username").value.toString();
+    password = document.getElementById("password").value.toString();
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (request.readyState === 4 && request.status === 200) {
+            alert('Sign up successful, proceed to login')
+        }
+        else if(request.status === 404 && request.readyState===4)
+        {
+            alert('Username taken');
+        }
+    };
+    request.open('POST', 'http://localhost:3000/signup/'+username.toString()+"/"+password.toString(), true);
+    request.send();
 
 }
