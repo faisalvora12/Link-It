@@ -9,9 +9,9 @@ body{
   font-family:arial;
 }
 
-.menubox{
- width: 22%;
-  height: 56%;
+.instructionsbox{
+ width: 50%;
+  height: 50%;
   background: #000;
   color: #FFFFFF;
   top: 50%;
@@ -34,13 +34,13 @@ h1{
 
 }
 
-.menubox input{
+.instructionsbox input{
   width: 100%;
   margin-bottom: 20px;
 }
 
 
-.menubox input[type="submit"]{
+.instructionsbox input[type="submit"]{
   border: 0;
   outline: 0;
   border-radius: 20px;
