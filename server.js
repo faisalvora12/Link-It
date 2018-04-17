@@ -9,7 +9,7 @@ const path = require('path');
 const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 /*==============================================================================================================
 
-             Declaration and Initialization of Variables
+ Declaration and Initialization of Variables
 
  ================================================================================================================= */
 var loginMap = new Map();
@@ -17,7 +17,7 @@ var graph = Graph();
 const app = express();
 const port = 3000;
 firebase.initializeApp({
-	databaseURL: 'https://link-it-252.firebaseio.com',
+    databaseURL: 'https://link-it-252.firebaseio.com',
 
 });
 var categoryName;
@@ -33,12 +33,12 @@ var gen = rn.generator({
 });
 /*==============================================================================================================
 
-            Creating category list from firebase
+ Creating category list from firebase
 
-================================================================================================================= */
+ ================================================================================================================= */
 categRef.once("value")
-    .then(function(snapshot) {
-        snapshot.forEach(function(childSnapshot) {
+    .then(function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
             var key = childSnapshot.key;
             categList.push(key);
             numCategs++;
@@ -47,14 +47,14 @@ categRef.once("value")
 
 /*==============================================================================================================
 
-            Populating loginMap and getting randomly generated category map for user to play
+ Populating loginMap and getting randomly generated category map for user to play
 
  ================================================================================================================= */
 
 
 dbLoginRef = firebase.database().ref("Login").orderByKey();
 dbLoginRef.once("value")
-    .then(function(snapshot) {
+    .then(function (snapshot) {
         snapshot.forEach(function (childSnapshot) {
             var key = childSnapshot.key;
             loginMap.set(key, childSnapshot.val());
@@ -62,40 +62,60 @@ dbLoginRef.once("value")
     });
 
 
-var interval = setInterval(function (){
+var interval = setInterval(function () {
     do {
         categoryName = categList[gen(0, numCategs - 1, true)];
-    }while(categoryName === "Login");
+    } while (categoryName === "Login");
     console.log("Selected category: " + categoryName);
     dbCategoryRef = firebase.database().ref(categoryName).orderByKey();
     dbCategoryRef.once("value")
-        .then(function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
+        .then(function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
                 var key = childSnapshot.key;
-                    var value = childSnapshot.val();
-                    console.log(key + "  " + value);
+                var value = childSnapshot.val();
+                console.log(key + "  " + value);
+                graph.addNode(key);
+                graph.addNode(value);
+                graph.addEdge(key,value)
+                graph.addEdge(value,key)
             });
         });
     clearInterval(interval);
-},350);
+}, 350);
 
 var html = fs.readFileSync('main.html');
 
 app.use(express.static(__dirname));
 
-app.get('/',(request,response)=>{
-    response.sendFile(path.join(__dirname +'/Login.html'))
+app.get('/', (request, response) => {
+    response.sendFile(path.join(__dirname + '/Login.html'))
 });
 
-app.post('/guess', function(req, res) {
-
-    res.json({'status' : 200, 'message-body' : 'success'});
-});
-
-app.post('/login/:username/:password', function(req, res) {
-    var status = checkSignIn(req.params.username, req.params.password);
-    if(status === false)
+app.post('/guess/:suggestion', function (req, res) {
+    const sugg = req.params.suggestion;
+    var nodes = graph.nodes();
+    for(var node in nodes)
     {
+        if(nodes[node] === sugg) {
+            console.log('got it')
+            var list = getAdjList(sugg);
+            var str="";
+            for (var i in list) {
+                    str += list[i]+"^";
+            }
+            console.log(str)
+            res.status(200);
+            res.send(str);
+            return;
+        }
+    }
+   res.status(404);
+    res.send();
+});
+
+app.post('/login/:username/:password', function (req, res) {
+    var status = checkSignIn(req.params.username, req.params.password);
+    if (status === false) {
         res.status(404);
     }
     else {
@@ -104,10 +124,9 @@ app.post('/login/:username/:password', function(req, res) {
     res.send();
 });
 
-app.post('/signup/:username/:password', function(req, res) {
+app.post('/signup/:username/:password', function (req, res) {
     var status = checkSignUp(req.params.username, req.params.password);
-    if(status === false)
-    {
+    if (status === false) {
         res.status(404);
     }
     else {
@@ -123,13 +142,16 @@ app.listen(port, (err) => {
 
     console.log(`server is listening on ${port}`);
 });
+/*==============================================================================================================
 
+ Utility Functions
+
+ ================================================================================================================= */
 
 function checkSignIn(name, password) {
     for (var entry of loginMap.entries()) {
-        if(entry[0] === name) {
-            if(entry[1] === password)
-            {
+        if (entry[0] === name) {
+            if (entry[1] === password) {
                 return true;
             }
         }
@@ -139,14 +161,16 @@ function checkSignIn(name, password) {
 
 function checkSignUp(uname, password) {
     for (var entry of loginMap.entries()) {
-        if(entry[0] === uname) {
+        if (entry[0] === uname) {
             return false;
         }
     }
     var ref = firebase.database().ref();
-    var newUser = {user: uname,pass: password};
-    
+    var newUser = {user: uname, pass: password};
     loginMap.set(uname, password);
     return true;
+}
 
+function getAdjList(node) {
+    return graph.adjacent(node);
 }
