@@ -6,7 +6,7 @@ function signin() {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (request.readyState === 4 && request.status === 200) {
-            location.replace('menu.html')
+            location.replace('main.html')
         }
         else if(request.status === 404 && request.readyState===4)
         {
