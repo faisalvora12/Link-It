@@ -91,6 +91,11 @@ app.get('/', (request, response) => {
     response.sendFile(path.join(__dirname + '/Login.html'))
 });
 
+app.get('/default', (request, response) => {
+    response.status(200)
+    response.send(categoryName)
+});
+
 app.post('/guess/:suggestion', function (req, res) {
     const sugg = req.params.suggestion;
     var nodes = graph.nodes();

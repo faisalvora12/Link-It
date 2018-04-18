@@ -44,8 +44,18 @@ function myFunction() {
 //function defaultgraph() {
 window.addEventListener('load', function() {
     jQuery(function(){
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function() {
+            if (request.readyState == 4 && request.status==200) {
+                alert(request.responseText);
+                graph.addNodes(request.responseText);
 
-        graph.loadJSON(graphJSON2);
+            }
+        };
+        request.open('GET', 'http://localhost:3000/default', true);
+        request.send();
+        ;
+        //graph.loadJSON(graphJSON2);
 
         springy = jQuery('#springydemo').springy({
             graph: graph
@@ -62,27 +72,27 @@ function enter() { //documentation for function is after the function ends
     x = document.getElementById("inputsm").value;
     document.getElementById("inputsm").value=" ";
 
-        /*var request = new XMLHttpRequest();
+        var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (request.readyState == XMLHttpRequest.DONE) {
             alert(request.responseText);
         }
-    };*/
-    //request.open('POST', 'http://localhost:3000/hello', true);
-    //request.send(x);
+    };
+    request.open('POST', 'http://localhost:3000/guess/'+x, true);
+    request.send();
     jQuery(function(){
-        graph.addNodes("Spiderman");
+        //graph.addNodes("Spiderman");
         graph.addNodes(x);
         graph.addEdges(['FordGT',x]);
-        graph.addEdges(['FordGT','Spiderman']);
-        var nodeto;
+        //graph.addEdges(['FordGT','Spiderman']);
+        /*var nodeto;
         for (var i = graph.nodes.length - 1; i >= 0; i--) {
             if(graph.nodes[i].id==x)
             {  nodeto=graph.nodes[i];
-              window.alert(graph.nodes[i].id);}
+              //window.alert(graph.nodes[i].id);}
         }
         graph.removeNode(nodeto);
-        var springy = jQuery('#springydemo').springy({
+        */var springy = jQuery('#springydemo').springy({
             graph: graph
         });
     });
