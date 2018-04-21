@@ -1,8 +1,11 @@
 var songcount=0;
 var audio = new Audio('boko.mp3');
 var x;
+var pool = [];
+var poolSize = 0;
 var springy;
 var graph = new Springy.Graph();
+//var connections;
 var graphJSON = {
     "nodes": [
         "Amphitryon",
@@ -43,12 +46,21 @@ function myFunction() {
 
 //function defaultgraph() {
 window.addEventListener('load', function() {
+
     jQuery(function(){
         var request = new XMLHttpRequest();
         request.onreadystatechange = function() {
             if (request.readyState == 4 && request.status==200) {
                 alert(request.responseText);
-                graph.addNodes(request.responseText);
+                var connections = request.responseText.split("^");
+                pool.push("!"+connections[0]);
+                for(var i=1;i<connections.length;i++)
+                {
+                    pool.push(connections[i]);
+                    poolSize++;
+
+                }
+                graph.addNodes(connections[0]);
 
             }
         };
@@ -62,6 +74,8 @@ window.addEventListener('load', function() {
         });
     });
 })
+
+
 //}
 
 function hint() {
@@ -70,29 +84,64 @@ function hint() {
 
 function enter() { //documentation for function is after the function ends
     x = document.getElementById("inputsm").value;
-    document.getElementById("inputsm").value=" ";
+    document.getElementById("inputsm").value="";
+    var connections;
 
         var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
-        if (request.readyState == XMLHttpRequest.DONE) {
-            alert(request.responseText);
+        if (request.readyState == 4 && request.status == 200) {
+
+           alert(request.responseText);
+
+            connections = request.responseText.split("^");
+            for(var i=0;i<poolSize;i++) {
+                if (pool[i] === x) {
+                    pool[i] = "!"+pool[i];
+                    graph.addNodes(x);
+                }
+                console.log(pool[i]+" ");
+            }
+
+                for(var i=0;i<connections.length;i++)
+                {
+                    var flag = false;
+                    for(var j=0;j<poolSize;j++) {
+                        if (("!" + connections[i]) === pool[j]) {
+                            var check = false;
+                            for(var k = 0; k < graph.nodes.length; k++)
+                            {
+                                if(graph.nodes[k] === pool[j] || pool[j].charAt(0) == "!")
+                                    check = true;
+                            }
+                            if(!check)
+                                graph.addNodes(pool[j]);
+                            graph.addEdges([x, connections[i]]);
+                            flag = true;
+                            continue;
+                        }
+                        if(connections[i] === pool[j])
+                            flag = true;
+                    }
+                    if(!flag)
+                    {
+                        pool.push(connections[i]);
+                        console.log("Added: "+connections[i]);
+                        poolSize++;
+                    }
+                }
+
         }
     };
     request.open('POST', 'http://localhost:3000/guess/'+x, true);
     request.send();
+
+        var i;
+        /*for (i = 0; i < connections.length; i++) {
+            graph.addNodes(connections[i]);
+            graph.addEdges([defaultcategory, connections[i]]);// for now add it default
+        }*/
     jQuery(function(){
-        //graph.addNodes("Spiderman");
-        graph.addNodes(x);
-        graph.addEdges(['FordGT',x]);
-        //graph.addEdges(['FordGT','Spiderman']);
-        /*var nodeto;
-        for (var i = graph.nodes.length - 1; i >= 0; i--) {
-            if(graph.nodes[i].id==x)
-            {  nodeto=graph.nodes[i];
-              //window.alert(graph.nodes[i].id);}
-        }
-        graph.removeNode(nodeto);
-        */var springy = jQuery('#springydemo').springy({
+        springy = jQuery('#springydemo').springy({
             graph: graph
         });
     });

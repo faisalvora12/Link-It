@@ -68,6 +68,7 @@ var interval = setInterval(function () {
         categoryName = categList[gen(0, numCategs - 1, true)];
     } while (categoryName === "Login");
     messageString = categoryName;
+    graph.addNode(categoryName);
     console.log("Selected category: " + categoryName);
     dbCategoryRef = firebase.database().ref(categoryName).orderByKey();
     dbCategoryRef.once("value")
@@ -87,13 +88,14 @@ var interval = setInterval(function () {
                 }*/
                 console.log(key + "  " + value);
                 graph.addNode(key);
+                graph.addEdge(key,categoryName)
                 graph.addNode(value);
                 graph.addEdge(key,value)
                 graph.addEdge(value,key)
             });
         });
     clearInterval(interval);
-}, 450);
+}, 600);
 
 var html = fs.readFileSync('main.html');
 
