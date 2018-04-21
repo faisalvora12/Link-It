@@ -2,7 +2,7 @@ const http = require('http'); //for http protocol
 const firebase = require('firebase'); //for database
 const fs = require('fs');
 const express = require('express');
-const ArrayList = require('array-list');
+const ArrayList = require('arraylist');
 const Graph = require('graph-data-structure');
 const rn = require('random-number');
 const path = require('path');
@@ -25,9 +25,10 @@ var dbCategoryRef;
 
 var categRef = firebase.database().ref();
 
-var categList = [];
+var categList = []
+var eachCategUniques = new ArrayList(100);
 var numCategs = 0;
-
+var messageString = "";
 var gen = rn.generator({
     integer: true
 });
@@ -66,6 +67,7 @@ var interval = setInterval(function () {
     do {
         categoryName = categList[gen(0, numCategs - 1, true)];
     } while (categoryName === "Login");
+    messageString = categoryName;
     console.log("Selected category: " + categoryName);
     dbCategoryRef = firebase.database().ref(categoryName).orderByKey();
     dbCategoryRef.once("value")
@@ -73,6 +75,16 @@ var interval = setInterval(function () {
             snapshot.forEach(function (childSnapshot) {
                 var key = childSnapshot.key;
                 var value = childSnapshot.val();
+                if(!eachCategUniques.contains(key))
+                {
+                    eachCategUniques.add(key);
+                    messageString += "^"+key;
+                }
+               /* if(!eachCategUniques.contains(value))
+                {
+                    eachCategUniques.add(value);
+                    messageString += "^"+value;
+                }*/
                 console.log(key + "  " + value);
                 graph.addNode(key);
                 graph.addNode(value);
@@ -81,7 +93,7 @@ var interval = setInterval(function () {
             });
         });
     clearInterval(interval);
-}, 350);
+}, 450);
 
 var html = fs.readFileSync('main.html');
 
@@ -93,7 +105,7 @@ app.get('/', (request, response) => {
 
 app.get('/default', (request, response) => {
     response.status(200)
-    response.send(categoryName)
+    response.send(messageString);
 });
 
 app.post('/guess/:suggestion', function (req, res) {
