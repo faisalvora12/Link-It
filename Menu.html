@@ -2,17 +2,18 @@
   <head>
     <title>Menu Box - Link It</title>
       <link rel="stylesheet" type="text/css" href="Menu.css">
-
+      <script src="menu.js"></script>
+      <script src="login.js"></script>
       <body>
         <div class="menubox">
             <h1>
               Link It!
           </h1>
           <form>
-            <input type="submit" onClick="onTimer()" value="Single Player"> <br>
-            <input type="submit" value="Multiple Player"><br>
-            <input type="submit" value="Instructions"><br>
-            <input type="submit" value="Quit"><br>
+            <input type="button" onClick="single()" value="Single Player"> <br>
+            <input type="button" value="Multiple Player"><br>
+            <input type="button" onClick="instructions()" value="Instructions"><br>
+            <input type="button" onClick="quit()" value="Quit"><br>
 
 
           </form>

@@ -2,6 +2,11 @@
   <head>
     <title>Instructions Box - Link It</title>
       <link rel="stylesheet" type="text/css" href="instructions.css">
+      <script>
+      function hello() {
+          location.replace("menu.html");
+      }
+      </script>
       <body>
         <div class="instructionsbox">
             <h1>
@@ -11,7 +16,7 @@
             <div contenteditable="false">
   This text can be edited by the user.
 </div>
-            <input type="submit" name="" value="Menu"><br>
+            <input onclick="hello()" type="button" value="Menu"><br>
 
 
           </form>

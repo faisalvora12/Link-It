@@ -59,7 +59,6 @@
             var pos = jQuery(this).offset();
             var p = fromScreen({x: e.pageX - pos.left, y: e.pageY - pos.top});
             selected = nearest = dragged = layout.nearest(p);
-
             if (selected.node !== null) {
                 dragged.point.m = 10000.0;
 

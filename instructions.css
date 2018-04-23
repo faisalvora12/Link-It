@@ -40,7 +40,7 @@ h1{
 }
 
 
-.instructionsbox input[type="submit"]{
+.instructionsbox input[type="button"]{
   border: 0;
   outline: 0;
   border-radius: 20px;

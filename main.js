@@ -5,6 +5,9 @@ var pool = [];
 var poolSize = 0;
 var springy;
 var graph = new Springy.Graph();
+$('button').click(function(e){
+    $('#myDiv').toggleClass('fullscreen');
+});
 //var connections;
 var graphJSON = {
     "nodes": [
@@ -42,38 +45,84 @@ var graphJSON2 = {
 function myFunction() {
     document.getElementById("demo").innerHTML = "Hello World";
 }
+
+
+var t = 1000;
+function onTimer() {
+    var minutes=Math.floor(t/60);
+    var seconds=t%60;
+    if(seconds<10)
+        document.getElementById('mycounter').innerHTML=minutes+":0"+seconds;
+    else
+        document.getElementById('mycounter').innerHTML = minutes+":"+seconds;
+    t--;
+    if (t < 0) {
+        boot();
+    }
+    else {
+        setTimeout(onTimer, 1000);
+    }
+}
 //This is where the default graph will be displayed
 
-//function defaultgraph() {
-window.addEventListener('load', function() {
+function boot(){
+    bootbox.confirm({
+        message: "Do you want to start a new game?",
+        buttons: {
+            confirm: {
+                label: 'Yes',
+                className: 'btn-success'
+            },
+            cancel: {
+                label: 'No',
+                className: 'btn-danger'
+            }
+        },
+        callback: function (result) {
+            console.log('This was logged in the callback: ' + result);
+            if(result==true) {
+                location.replace('main.html');
 
+            }
+            else {
+                location.replace('menu.html');
+
+            }
+        }
+    });
+}
+function toTitleCase(str)
+{
+    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
+window.addEventListener('load', function() {
     jQuery(function(){
         var request = new XMLHttpRequest();
         request.onreadystatechange = function() {
             if (request.readyState == 4 && request.status==200) {
                 alert(request.responseText);
                 var connections = request.responseText.split("^");
-                pool.push("!"+connections[0]);
+                pool.push("!"+connections[0].trim());
                 for(var i=1;i<connections.length;i++)
                 {
-                    pool.push(connections[i]);
+                    pool.push(connections[i].trim());
                     poolSize++;
 
                 }
-                graph.addNodes(connections[0]);
-
+                graph.addNodes(toTitleCase(connections[0]).trim());
+                onTimer();
             }
         };
         request.open('GET', 'http://localhost:3000/default', true);
         request.send();
-        ;
-        //graph.loadJSON(graphJSON2);
+
 
         springy = jQuery('#springydemo').springy({
             graph: graph
         });
     });
-})
+});
 
 
 //}
@@ -85,19 +134,22 @@ function hint() {
 function enter() { //documentation for function is after the function ends
     x = document.getElementById("inputsm").value;
     document.getElementById("inputsm").value="";
+
     var connections;
 
         var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
+            var y=parseInt(document.getElementById('i').textContent);
 
+            document.getElementById('i').textContent=y+t;
            alert(request.responseText);
 
             connections = request.responseText.split("^");
             for(var i=0;i<poolSize;i++) {
-                if (pool[i] === x) {
+                if (pool[i] === (x.toUpperCase().trim())) {
                     pool[i] = "!"+pool[i];
-                    graph.addNodes(x);
+                    graph.addNodes(toTitleCase(x.trim()));
                 }
                 console.log(pool[i]+" ");
             }
@@ -114,8 +166,9 @@ function enter() { //documentation for function is after the function ends
                                     check = true;
                             }
                             if(!check)
-                                graph.addNodes(pool[j]);
-                            graph.addEdges([x, connections[i]]);
+                                graph.addNodes(toTitleCase(pool[j].trim()));
+                            alert(toTitleCase(x.trim())+"      "+ toTitleCase(connections[i]));
+                            graph.addEdges([toTitleCase(x.trim()), toTitleCase(connections[i])]);
                             flag = true;
                             continue;
                         }
@@ -124,7 +177,7 @@ function enter() { //documentation for function is after the function ends
                     }
                     if(!flag)
                     {
-                        pool.push(connections[i]);
+                        pool.push(connections[i].trim());
                         console.log("Added: "+connections[i]);
                         poolSize++;
                     }
@@ -135,16 +188,6 @@ function enter() { //documentation for function is after the function ends
     request.open('POST', 'http://localhost:3000/guess/'+x, true);
     request.send();
 
-        var i;
-        /*for (i = 0; i < connections.length; i++) {
-            graph.addNodes(connections[i]);
-            graph.addEdges([defaultcategory, connections[i]]);// for now add it default
-        }*/
-    jQuery(function(){
-        springy = jQuery('#springydemo').springy({
-            graph: graph
-        });
-    });
 
 }
 /*
@@ -209,3 +252,106 @@ function music() {
     else
         audio.pause();
 }
+
+
+
+var dis=0;
+function menu() {
+    bootbox.confirm({
+        message: "Are you sure you want to quit the game?",
+        buttons: {
+            confirm: {
+                label: 'Yes',
+                className: 'btn-success'
+            },
+            cancel: {
+                label: 'No',
+                className: 'btn-danger'
+            }
+        },
+        callback: function (result) {
+            console.log('This was logged in the callback: ' + result);
+            if(result==true) {
+                location.replace('menu.html');
+
+            }
+            else {
+                $(document).on('click', '.modal-backdrop', function (event) {
+                    bootbox.hideAll()
+                });
+
+            }
+        }
+    });
+
+}
+function fullscreen() {
+
+    var f=0;
+    var elem = document.getElementById("full");
+    if(elem.requestFullscreen) {
+        elem.requestFullscreen();
+        f=1;
+    } else if(elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+        f=1;
+    } else if(elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+        f=1;
+    } else if(element.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+        f=1;
+    }
+    if(f===1){
+
+        document.getElementById("fullb").style.visibility= "hidden";
+        document.getElementById("full").style.height = "96%";
+        document.getElementById("full").style.width = "100%";
+        document.getElementById("full2").style.height = "98%";
+        document.getElementById("full2").style.width = "98%";
+        document.getElementById("full3").style.height = "98%";
+        document.getElementById("full3").style.width = "102%";
+
+        //Create an input type dynamically.
+        var element = document.createElement("input");
+
+//Create Labels
+        var button = document.createElement("button");
+
+//Assign different attributes to the element.
+        element.setAttribute("type", "text");
+        element.setAttribute("id", "del1");
+        element.setAttribute("name", "Test Name");
+        element.setAttribute("style", "width:200px");
+
+        button.setAttribute("style", "width:200px");
+        button.setAttribute("style", "height:30px");
+        button.setAttribute("value", "ENTER");
+        button.setAttribute("id", "del2");
+
+// 'foobar' is the div id, where new fields are to be added
+        var foo = document.getElementById("full4");
+
+//Append the element in page (in span).
+        foo.appendChild(element);
+        foo.appendChild(button);
+
+    }
+    else
+    {
+        alert("This feature is not supported in your browser. Please try another browser");
+    }
+}
+document.addEventListener('fullscreenchange', exitHandler);
+document.addEventListener('webkitfullscreenchange', exitHandler);
+document.addEventListener('mozfullscreenchange', exitHandler);
+document.addEventListener('MSFullscreenChange', exitHandler);
+
+function exitHandler() {
+    if (!document.fullscreenElement && !document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
+        document.getElementById("fullb").style.visibility= "visible";
+        $("#del1").remove();
+        $("#del2").remove();
+    }
+}
+

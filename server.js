@@ -13,7 +13,7 @@ const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 
  ================================================================================================================= */
 var loginMap = new Map();
-var graph = Graph();
+var graph;
 const app = express();
 const port = 3000;
 firebase.initializeApp({
@@ -26,7 +26,7 @@ var dbCategoryRef;
 var categRef = firebase.database().ref();
 
 var categList = []
-var eachCategUniques = new ArrayList(100);
+var eachCategUniques;
 var numCategs = 0;
 var messageString = "";
 var gen = rn.generator({
@@ -62,40 +62,43 @@ dbLoginRef.once("value")
         })
     });
 
+function makeRandom() {
 
-var interval = setInterval(function () {
-    do {
-        categoryName = categList[gen(0, numCategs - 1, true)];
-    } while (categoryName === "Login");
-    messageString = categoryName;
-    graph.addNode(categoryName);
-    console.log("Selected category: " + categoryName);
-    dbCategoryRef = firebase.database().ref(categoryName).orderByKey();
-    dbCategoryRef.once("value")
-        .then(function (snapshot) {
-            snapshot.forEach(function (childSnapshot) {
-                var key = childSnapshot.key;
-                var value = childSnapshot.val();
-                if(!eachCategUniques.contains(key))
-                {
-                    eachCategUniques.add(key);
-                    messageString += "^"+key;
-                }
-               /* if(!eachCategUniques.contains(value))
-                {
-                    eachCategUniques.add(value);
-                    messageString += "^"+value;
-                }*/
-                console.log(key + "  " + value);
-                graph.addNode(key);
-                graph.addEdge(key,categoryName)
-                graph.addNode(value);
-                graph.addEdge(key,value)
-                graph.addEdge(value,key)
+    var interval = setInterval(function () {
+        do {
+            categoryName = categList[gen(0, numCategs - 1, true)];
+        } while (categoryName === "Login");
+        graph = Graph();
+        messageString = categoryName.toUpperCase();
+        eachCategUniques = new ArrayList;
+        graph.addNode(categoryName);
+        console.log("Selected category: " + categoryName);
+        dbCategoryRef = firebase.database().ref(categoryName).orderByKey();
+        dbCategoryRef.once("value")
+            .then(function (snapshot) {
+                snapshot.forEach(function (childSnapshot) {
+                    var key = childSnapshot.key;
+                    var value = childSnapshot.val();
+                    if (!eachCategUniques.contains(key)) {
+                        eachCategUniques.add(key);
+                        messageString += "^" + key.toUpperCase();
+                    }
+                    /* if(!eachCategUniques.contains(value))
+                     {
+                         eachCategUniques.add(value);
+                         messageString += "^"+value;
+                     }*/
+                    console.log(key + "  " + value);
+                    graph.addNode(key.toUpperCase());
+                    graph.addEdge(key.toUpperCase(), categoryName.toUpperCase())
+                    graph.addNode(value.toUpperCase());
+                    graph.addEdge(key.toUpperCase(), value.toUpperCase())
+                    graph.addEdge(value.toUpperCase(), key.toUpperCase())
+                });
             });
-        });
-    clearInterval(interval);
-}, 600);
+        clearInterval(interval);
+    }, 600);
+}
 
 var html = fs.readFileSync('main.html');
 
@@ -106,8 +109,13 @@ app.get('/', (request, response) => {
 });
 
 app.get('/default', (request, response) => {
-    response.status(200)
-    response.send(messageString);
+    makeRandom();
+
+
+    setTimeout(function (){
+        response.status(200);
+        response.send(messageString)
+    },700);
 });
 
 app.post('/guess/:suggestion', function (req, res) {
@@ -115,9 +123,10 @@ app.post('/guess/:suggestion', function (req, res) {
     var nodes = graph.nodes();
     for(var node in nodes)
     {
-        if(nodes[node] === sugg) {
+        let newSugg = sugg.trim();
+        if(nodes[node].toUpperCase() === newSugg.toUpperCase()) {
             console.log('got it')
-            var list = getAdjList(sugg);
+            var list = getAdjList(newSugg.toUpperCase());
             var str="";
             for (var i in list) {
                     str += list[i]+"^";
