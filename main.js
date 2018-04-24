@@ -97,6 +97,14 @@ function toTitleCase(str)
 }
 
 window.addEventListener('load', function() {
+    var input = document.getElementById("inputsm");
+
+    input.addEventListener("keyup",function(event) {
+        if (event.keyCode === 13) {
+            alert('hello');
+            document.getElementById("enter").click();
+        }
+    });
     jQuery(function(){
         var request = new XMLHttpRequest();
         request.onreadystatechange = function() {
@@ -146,7 +154,7 @@ function enter() { //documentation for function is after the function ends
            alert(request.responseText);
 
             connections = request.responseText.split("^");
-            for(var i=0;i<poolSize;i++) {
+            for(var i=0;i<pool.length;i++) {
                 if (pool[i] === (x.toUpperCase().trim())) {
                     pool[i] = "!"+pool[i];
                     graph.addNodes(toTitleCase(x.trim()));
@@ -170,7 +178,7 @@ function enter() { //documentation for function is after the function ends
                             alert(toTitleCase(x.trim())+"      "+ toTitleCase(connections[i]));
                             graph.addEdges([toTitleCase(x.trim()), toTitleCase(connections[i])]);
                             flag = true;
-                            continue;
+                          //  continue;
                         }
                         if(connections[i] === pool[j])
                             flag = true;
@@ -355,3 +363,11 @@ function exitHandler() {
     }
 }
 
+var input = document.getElementById("inputsm");
+
+input.addEventListener("keyup",function(event) {
+    alert('hello');
+    if (event.keyCode === 13) {
+        document.getElementById("enter").click();
+    }
+});
