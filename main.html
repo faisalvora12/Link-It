@@ -37,14 +37,14 @@
 <!--    main body of html  -->
 <body>
 <!--        Web Page Coding            -->
-<div class="container-fluid">
+<div class="container-fluid" style="height: 96vh; overflow-y: hidden">
 
-	<div class="row" class="wrap" style="border: 2px solid black;height:100%">
-		<div class="col-xs-12 col-md-8 col-lg-9" style="border: 2px solid black">
-			<div id="full" class="panel panel-primary">
-				<div id="full4" class="panel-heading"><i style="margin-left: 18px"><b>GAME</b></i> <input id="fullb" type="button" onClick="fullscreen()" value="Full Screen" style="color: black;float: right;margin-right: 18px"></div>
-				<div id="full2" class="panel-body" style="min-height: 420px;word-wrap: break-word">
-					  <div id="full3" class="dragscroll" style="height: 390px; width: 100%; overflow: scroll;cursor : -webkit-grab">
+	<div class="row" class="wrap" style="border: 2px solid black;height:96vh; overflow-y: hidden; min-height: 100%">
+		<div class="col-xs-12 col-md-8 col-lg-9" style="border: 2px solid black; height: 96vh">
+			<div id="full" class="panel panel-primary" style="height: 96vh">
+				<div id="full4" class="panel-heading"><i style="padding: 4px; margin-left: 18px; height: 96vh"><b>GAME</b></i> <input id="fullb" type="button" onClick="fullscreen()" value="Full Screen" style="color: white;float: right;margin-right: 18px; border: 0; outline: 0; border-radius: 20px; padding: 0px 8px; background: black"></div>
+				<div id="full2" class="panel-body" style="min-height: 420px;word-wrap: break-word; height: 96vh">
+					  <div id="full3" class="dragscroll" style="height: 96vh; width: 100%; overflow: scroll;cursor : -webkit-grab">
 						<canvas id="springydemo" width="1000" height="480" />
 
 					</div>
@@ -53,7 +53,7 @@
 			</div>
 		</div>
 		<div>
-			<div class="col-xs-12 col-md-4 col-lg-3" style="border: 2px solid black">
+			<div class="col-xs-12 col-md-4 col-lg-3" style="border: 2px solid black; height: 100vh; min-height: 100%; overflow-y: hidden">
 				<div class="panel panel-success">
 					<div class="panel-heading text-center" ><i style="margin-left: 18px"><b>HI <label id="username" style="max-width: 140px; word-wrap: break-word">USERNAME</label></b></i></div>
 					<div class="panel-body" style="min-height: 415px;word-wrap: break-word">
@@ -69,14 +69,20 @@
 							<div style="text-align:center">
                                 <label for="inputdefault">Enter your suggestion</label>
 								<input  id="inputsm" type="text" placeholder="Eg:Will Smith" class="form-control input-sm"><br>
-								<input type="button" onClick="enter()" value="ENTER">
+								<input id= "enter" type="button" onClick="enter()" value="Enter" style="border: 0; outline: 0; border-radius: 20px; background: black; color: white; padding: 4px 8px">
 							</div>
 						</div>
-						<div class="panel panel-primary">
-							<div class="panel-heading text-center"><i style="margin-left: 18px"><b>SCORECARD</b></i>
+						<div class="panel panel-warning">
+							<div class="panel-heading text-center"><i style="margin-left: 18px"><b>PAST GUESSES</b></i>
 							</div>
-							<div class="panel-body" style="min-height: 140px;overflow-y: scroll;word-wrap: break-word">The scorecard will be diplayed here
+							<div class="panel-body" style="min-height: 140px;overflow-y: scroll;word-wrap: break-word">The past guesses will be diplayed here
 							</div>
+						</div>
+					</div>
+					<div class="panel panel-primary" style="margin-left: 16px; margin-right: 16px">
+						<div class="panel-heading text-center"><i style="margin-left: 18px"><b>LEADERBOARD</b></i>
+						</div>
+						<div class="panel-body" style="min-height: 140px;overflow-y: scroll;word-wrap: break-word">The scores of all the players who are currently playing will be diplayed here
 						</div>
 					</div>
 				</div>
@@ -84,8 +90,8 @@
 		</div>
 		<div class="footer" style="border: 2px solid black;height: 45px">
 			<H5 style="margin-left: 18px"><i><b style="color: white;background-color: grey">LINK IT!</b></i>
-                <input type="button" onClick="menu()" value="Menu" style="float: right;margin-right: 18px">
-				<input type="button" onClick="hint()" value="Hint" style="float: right;margin-right: 18px">
+                <input type="button" onClick="menu()" value="Menu" style="float: right;margin-right: 18px; border: 0; outline: 0; border-radius: 20px; background: black; color: white; padding: 4px 8px">
+				<input type="button" onClick="hint()" value="Hint" style="float: right;margin-right: 18px; border: 0; outline: 0; border-radius: 20px; background: black; color: white; padding: 4px 8px">
 				<input type="button" onClick="music()" class="mybutton" name="music" style="float: right">
 
 			</H5>
