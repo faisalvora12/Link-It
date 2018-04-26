@@ -150,11 +150,20 @@ function enter() { //documentation for function is after the function ends
     x = document.getElementById("inputsm").value;
     document.getElementById("inputsm").value="";
 
+
     var connections;
 
         var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
+
+            var foo = document.getElementById("past");
+            var li = document.createElement("li");
+            var text = document.createTextNode(x);
+            li.appendChild( text );
+            foo.appendChild(li);
+
+
             var y=parseInt(document.getElementById('i').textContent);
             document.getElementById('i').textContent=y+t;
 
@@ -209,9 +218,14 @@ function enter() { //documentation for function is after the function ends
                 }
 
         }
-        else
+        else if(request.readyState == 4)
         {
-
+            var foo = document.getElementById("past");
+            var li = document.createElement("li");
+            li.setAttribute("style", "color:red");
+            var text = document.createTextNode(x);
+            li.appendChild( text );
+            foo.appendChild(li);
         }
     };
     request.open('POST', 'http://localhost:3000/guess/'+x, true);
