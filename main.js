@@ -4,17 +4,14 @@ var x;
 var pool = [];
 var poolSize = 0;
 var springy;
+var isFull=0;
 var graph = new Springy.Graph();
 $('button').click(function(e){
     $('#myDiv').toggleClass('fullscreen');
 });
 
-function myFunction() {
-    document.getElementById("demo").innerHTML = "Hello World";
-}
 
-
-var t = 1000;
+var t = 5;
 function onTimer() {
     var minutes=Math.floor(t/60);
     var seconds=t%60;
@@ -47,21 +44,12 @@ function boot(){
         },
         callback: function (result) {
             console.log('This was logged in the callback: ' + result);
-            var request = new XMLHttpRequest();
+           /* var request = new XMLHttpRequest();
             request.onreadystatechange = function () {
-                if (request.readyState === 4 && request.status === 200) {
-                    location.replace('menu.html');
-                }
-                else if(request.status === 404 && request.readyState===4)
-                {
-                    mess="Invalid username or password";
-                    //boot();
-                    alert('Invalid username or password');
-                }
             };
             request.open('POST', 'http://localhost:3000/score/'+parseInt(document.getElementById('i').textContent)+"/"+username, true);
             request.send();
-
+*/
             if(result==true) {
                 location.replace('main.html');
 
@@ -80,10 +68,8 @@ function toTitleCase(str)
 
 window.addEventListener('load', function() {
     var input = document.getElementById("inputsm");
-
     input.addEventListener("keyup",function(event) {
         if (event.keyCode === 13) {
-          //alert('hello');
             document.getElementById("enter").click();
         }
     });
@@ -147,65 +133,73 @@ function hint() {
 }
 
 function enter() { //documentation for function is after the function ends
+    if (isFull === 0) {
     x = document.getElementById("inputsm").value;
-    document.getElementById("inputsm").value="";
-
-
+    document.getElementById("inputsm").value = "";
+}
+if (isFull === 1) {
+x = document.getElementById("del1").value;
+document.getElementById("del1").value = "";
+}
     var connections;
 
         var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
-
-            var foo = document.getElementById("past");
-            var li = document.createElement("li");
-            var text = document.createTextNode(x);
-            li.appendChild( text );
-            foo.appendChild(li);
-
-
-            var y=parseInt(document.getElementById('i').textContent);
-            document.getElementById('i').textContent=y+t;
-
-            connections = request.responseText.split("^");
-            for(var i=0;i<pool.length;i++) {
-                if (pool[i] === (x.toUpperCase().trim())) {//add the suggestion in the graph if it matches the word in pool
-                    pool[i] = "!"+pool[i];//mark the word added as ! to denote that it is open
-                    var hidden =hide(toTitleCase(x.trim()));
-                    removenodee(hidden);
-                    graph.addNodes(toTitleCase(x.trim()));//add the trimmed and titled cases suggestion to the graph
+            var repeat=0;
+            for(var k = 0; k < graph.nodes.length; k++) {
+                if (graph.nodes[k].id === toTitleCase(x.trim())) {
+                    repeat = 1;
                 }
-                console.log(pool[i]+" ");//debugging
             }
+            if(repeat!=1) {
+                var foo = document.getElementById("past");
+                var li = document.createElement("li");
+                var text = document.createTextNode(x);
+                li.setAttribute("style", "color:green");
+                li.appendChild(text);
+                foo.appendChild(li);
+                li.scrollIntoView();
+
+                var y = parseInt(document.getElementById('i').textContent);//score
+                document.getElementById('i').textContent = y + t;
+
+                connections = request.responseText.split("^");
+                for (var i = 0; i < pool.length; i++) {
+                    if (pool[i] === (x.toUpperCase().trim())) {//add the suggestion in the graph if it matches the word in pool
+                        pool[i] = "!" + pool[i];//mark the word added as ! to denote that it is open
+                        var hidden = hide(toTitleCase(x.trim()));
+                        removenodee(hidden);
+                        graph.addNodes(toTitleCase(x.trim()));//add the trimmed and titled cases suggestion to the graph
+                    }
+                    console.log(pool[i] + " ");//debugging
+                }
 
 
-                for(var i=0;i<connections.length;i++)//add an edge from the suggested word to any open nodes in the graph
+                for (var i = 0; i < connections.length; i++)//add an edge from the suggested word to any open nodes in the graph
                 {
                     var flag = false;//checks if the connection is already there in the pool
-                    for(var j=0;j<poolSize;j++) {
+                    for (var j = 0; j < poolSize; j++) {
                         if (("!" + connections[i]) === pool[j]) {//if the connection is open in the graph/the connection is already in the !pool
                             var check = false;
-                            for(var k = 0; k < graph.nodes.length; k++)
-                            {
-                                if(graph.nodes[k] === pool[j] || pool[j].charAt(0) == "!")
+                            for (var k = 0; k < graph.nodes.length; k++) {
+                                if (graph.nodes[k] === pool[j] || pool[j].charAt(0) == "!")
                                     check = true;
                             }
-                            if(!check)
+                            if (!check)
                                 graph.addNodes(toTitleCase(pool[j].trim()));
-                           // alert(toTitleCase(x.trim())+"      "+ toTitleCase(connections[i]));
                             graph.addEdges([toTitleCase(x.trim()), toTitleCase(connections[i])]);
                             flag = true;
-                          //  continue;
+                            //  continue;
                         }
-                        if(connections[i] === pool[j])
+                        if (connections[i] === pool[j])
                             flag = true;
                     }
-                    if(!flag)
-                    {
-                        if(connections[i].length>0) {
+                    if (!flag) {
+                        if (connections[i].length > 0) {
                             pool.push(connections[i].trim());
                             //add the connections in the hidden format to graph
-                           // alert(connections[i]);
+                            // alert(connections[i]);
 
                             var hidden = hide(connections[i]);
                             graph.addNodes(hidden);
@@ -216,7 +210,18 @@ function enter() { //documentation for function is after the function ends
                         }
                     }
                 }
-
+            }
+            else
+            {
+                /*var foo = document.getElementById("past");
+                var li = document.createElement("li");
+                var text = document.createTextNode("already on graph-"+x);
+                li.setAttribute("style", "color:purple");
+                li.appendChild(text);
+                foo.appendChild(li);
+                li.scrollIntoView();
+                */snack();
+            }
         }
         else if(request.readyState == 4)
         {
@@ -226,6 +231,8 @@ function enter() { //documentation for function is after the function ends
             var text = document.createTextNode(x);
             li.appendChild( text );
             foo.appendChild(li);
+            li.scrollIntoView();
+
         }
     };
     request.open('POST', 'http://localhost:3000/guess/'+x, true);
@@ -347,7 +354,7 @@ function fullscreen() {
         f=1;
     }
     if(f===1){
-
+        isFull=1;
         document.getElementById("fullb").style.visibility= "hidden";
         document.getElementById("full").style.height = "96%";
         document.getElementById("full").style.width = "100%";
@@ -360,18 +367,20 @@ function fullscreen() {
         var element = document.createElement("input");
 
 //Create Labels
-        var button = document.createElement("button");
+        var button = document.createElement("input");
 
 //Assign different attributes to the element.
         element.setAttribute("type", "text");
         element.setAttribute("id", "del1");
         element.setAttribute("name", "Test Name");
-        element.setAttribute("style", "width:200px");
+        element.setAttribute("style", "width:200px;color:black");
 
-        button.setAttribute("style", "width:200px");
-        button.setAttribute("style", "height:30px");
+        button.setAttribute("type", "button");
+        button.setAttribute("onclick", "enter();");
         button.setAttribute("value", "ENTER");
+        button.setAttribute("style", "color: white;float: right;margin-right: 18px; border: 0; outline: 0; border-radius: 20px; padding: 0px 8px; background: black");
         button.setAttribute("id", "del2");
+
 
 // 'foobar' is the div id, where new fields are to be added
         var foo = document.getElementById("full4");
@@ -379,7 +388,12 @@ function fullscreen() {
 //Append the element in page (in span).
         foo.appendChild(element);
         foo.appendChild(button);
-
+        var input = document.getElementById("del1");
+        input.addEventListener("keyup",function(event) {
+            if (event.keyCode === 13) {
+                document.getElementById("enter").click();
+            }
+        });
     }
     else
     {
@@ -393,8 +407,14 @@ document.addEventListener('MSFullscreenChange', exitHandler);
 
 function exitHandler() {
     if (!document.fullscreenElement && !document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
+        isFull=0;
         document.getElementById("fullb").style.visibility= "visible";
         $("#del1").remove();
         $("#del2").remove();
     }
+}
+function snack() {
+    var x = document.getElementById("snackbar");
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
 }
