@@ -8,40 +8,7 @@ var graph = new Springy.Graph();
 $('button').click(function(e){
     $('#myDiv').toggleClass('fullscreen');
 });
-//var connections;
-var graphJSON = {
-    "nodes": [
-        "Amphitryon",
-        "Alcmene",
-        "Iphicles",
-        "Heracles",
-        "Batman",
-        "BruceWayne",
-        "Spiderman",
-        "PeterParker",
-        "Batmobile",
-        "FordGT",
-    ],
-    "edges": [
-        ["Amphitryon", "Alcmene"],
-        ["Alcmene", "Amphitryon"],
-        ["Amphitryon", "Iphicles"],
-        ["Amphitryon", "Heracles"],
-        ["Batman", "BruceWayne"],
-        ["Batman", "Spiderman"],
-        ["Batman", "Batmobile"],
-        ["Batmobile", "FordGT"],
-        ["Spiderman", "PeterParker"],
-        ["Spiderman", "Batman"]
-    ]
-};
-var graphJSON2 = {
-    "nodes": [
-        "FordGT"
-    ],
-    "edges": [
-    ]
-};
+
 function myFunction() {
     document.getElementById("demo").innerHTML = "Hello World";
 }
@@ -80,6 +47,21 @@ function boot(){
         },
         callback: function (result) {
             console.log('This was logged in the callback: ' + result);
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function () {
+                if (request.readyState === 4 && request.status === 200) {
+                    location.replace('menu.html');
+                }
+                else if(request.status === 404 && request.readyState===4)
+                {
+                    mess="Invalid username or password";
+                    //boot();
+                    alert('Invalid username or password');
+                }
+            };
+            request.open('POST', 'http://localhost:3000/score/'+parseInt(document.getElementById('i').textContent)+"/"+username, true);
+            request.send();
+
             if(result==true) {
                 location.replace('main.html');
 
@@ -101,7 +83,7 @@ window.addEventListener('load', function() {
 
     input.addEventListener("keyup",function(event) {
         if (event.keyCode === 13) {
-            alert('hello');
+          //alert('hello');
             document.getElementById("enter").click();
         }
     });
@@ -109,7 +91,7 @@ window.addEventListener('load', function() {
         var request = new XMLHttpRequest();
         request.onreadystatechange = function() {
             if (request.readyState == 4 && request.status==200) {
-                alert(request.responseText);
+                //alert(request.responseText);
                 var connections = request.responseText.split("^");
                 pool.push("!"+connections[0].trim());
                 for(var i=1;i<connections.length;i++)
@@ -119,6 +101,13 @@ window.addEventListener('load', function() {
 
                 }
                 graph.addNodes(toTitleCase(connections[0]).trim());
+                for(var i=1;i<connections.length;i++)
+                {
+                    var hidden=hide(connections[i].trim());
+                    //alert(connections.length);
+                    graph.addNodes(hidden);
+                    graph.addEdges([toTitleCase(connections[0]).trim(),hidden]);
+                }
                 onTimer();
             }
         };
@@ -134,7 +123,25 @@ window.addEventListener('load', function() {
 
 
 //}
+function hide(sug)
+{
+    var count=0;
+    var hidden="(";
+    //alert(sug.length);
+    for(var i=0;i<sug.length;i++)
+    {
+        if(sug.charAt(i)!=' ') {
+            count++;
+        }
+        else {
+            hidden = hidden + count + ",";
+            count=0;
+        }
+    }
 
+    hidden=hidden+count+")";
+    return hidden;
+}
 function hint() {
     alert("I am an alert box!");
 }
@@ -149,24 +156,25 @@ function enter() { //documentation for function is after the function ends
     request.onreadystatechange = function() {
         if (request.readyState == 4 && request.status == 200) {
             var y=parseInt(document.getElementById('i').textContent);
-
             document.getElementById('i').textContent=y+t;
-           alert(request.responseText);
 
             connections = request.responseText.split("^");
             for(var i=0;i<pool.length;i++) {
-                if (pool[i] === (x.toUpperCase().trim())) {
-                    pool[i] = "!"+pool[i];
-                    graph.addNodes(toTitleCase(x.trim()));
+                if (pool[i] === (x.toUpperCase().trim())) {//add the suggestion in the graph if it matches the word in pool
+                    pool[i] = "!"+pool[i];//mark the word added as ! to denote that it is open
+                    var hidden =hide(toTitleCase(x.trim()));
+                    removenodee(hidden);
+                    graph.addNodes(toTitleCase(x.trim()));//add the trimmed and titled cases suggestion to the graph
                 }
-                console.log(pool[i]+" ");
+                console.log(pool[i]+" ");//debugging
             }
 
-                for(var i=0;i<connections.length;i++)
+
+                for(var i=0;i<connections.length;i++)//add an edge from the suggested word to any open nodes in the graph
                 {
-                    var flag = false;
+                    var flag = false;//checks if the connection is already there in the pool
                     for(var j=0;j<poolSize;j++) {
-                        if (("!" + connections[i]) === pool[j]) {
+                        if (("!" + connections[i]) === pool[j]) {//if the connection is open in the graph/the connection is already in the !pool
                             var check = false;
                             for(var k = 0; k < graph.nodes.length; k++)
                             {
@@ -175,7 +183,7 @@ function enter() { //documentation for function is after the function ends
                             }
                             if(!check)
                                 graph.addNodes(toTitleCase(pool[j].trim()));
-                            alert(toTitleCase(x.trim())+"      "+ toTitleCase(connections[i]));
+                           // alert(toTitleCase(x.trim())+"      "+ toTitleCase(connections[i]));
                             graph.addEdges([toTitleCase(x.trim()), toTitleCase(connections[i])]);
                             flag = true;
                           //  continue;
@@ -185,11 +193,24 @@ function enter() { //documentation for function is after the function ends
                     }
                     if(!flag)
                     {
-                        pool.push(connections[i].trim());
-                        console.log("Added: "+connections[i]);
-                        poolSize++;
+                        if(connections[i].length>0) {
+                            pool.push(connections[i].trim());
+                            //add the connections in the hidden format to graph
+                           // alert(connections[i]);
+
+                            var hidden = hide(connections[i]);
+                            graph.addNodes(hidden);
+                            graph.addEdges([toTitleCase(x).trim(), hidden]);
+                            //added the connection to the graph and added the edge
+                            console.log("Added: " + connections[i]);
+                            poolSize++;
+                        }
                     }
                 }
+
+        }
+        else
+        {
 
         }
     };
@@ -200,15 +221,17 @@ function enter() { //documentation for function is after the function ends
 }
 /*
        *
-       ** REMOVE element
-       *  var nodeto;
-       for (var i = graph.nodes.length - 1; i >= 0; i--) {
-           if(graph.nodes[i].id=='PeterParker')
-               nodeto=graph.nodes[i];
-           //  window.alert(graph.nodes[i].id);
-       }
-       graph.removeNode(nodeto);
-       *
+       ** REMOVE element*/
+        function removenodee(sug) {
+            var nodeto;
+            for (var i = graph.nodes.length - 1; i >= 0; i--) {
+                if (graph.nodes[i].id == sug)
+                    nodeto = graph.nodes[i];
+
+            }
+            graph.removeNode(nodeto);
+        }
+       /*
        *
        *
        ** ADD NODE-Two ways to add node where node1 is a newly created node and x is a string got from text field
@@ -254,7 +277,6 @@ graph.addNodes(x);
 
 function music() {
     songcount=songcount+1;
-    alert
     if((songcount%2)!=0)
         audio.play();
     else
@@ -362,12 +384,3 @@ function exitHandler() {
         $("#del2").remove();
     }
 }
-
-var input = document.getElementById("inputsm");
-
-input.addEventListener("keyup",function(event) {
-    alert('hello');
-    if (event.keyCode === 13) {
-        document.getElementById("enter").click();
-    }
-});

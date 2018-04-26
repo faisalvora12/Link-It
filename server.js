@@ -141,6 +141,15 @@ app.post('/guess/:suggestion', function (req, res) {
     res.send();
 });
 
+
+
+app.post('/score/:score/:username', function (req, res) {
+
+    res.status(404);
+    res.send();
+});
+
+
 app.post('/login/:username/:password', function (req, res) {
     var status = checkSignIn(req.params.username, req.params.password);
     if (status === false) {
