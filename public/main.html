@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!--  The libraries and APIs    -->
+	<!-- javascript library-->
+	<script type="text/javascript" src="https://cdn.rawgit.com/asvd/dragscroll/master/dragscroll.js"></script>
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<!-- bootstrap -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/bootbox/4.4.0/bootbox.min.js"></script>
+
+	<!-- The libraries and APIs definition end -->
+	<!-- meta definitions -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=devide-width,initial-scale=1.0">
+	<!-- meta definitions end -->
+
+	<!-- external css link to main.css -->
+	<link rel="stylesheet" type="text/css" href="main.css">
+
+
+	<script src="springy.js"></script>
+	<script src="springyui.js"></script>
+	<!-- link for to main.js -->
+	<script src="login.js"></script>
+	<script src="main.js"></script>
+
+
+</head>
+<!--    main body of html  -->
+<body>
+<!--        Web Page Coding            -->
+<div class="container-fluid" style="display: flex;flex-direction: column; ">
+
+	<div class="row" class="wrap" style="border: 2px solid black;height: 100%; overflow-y: hidden; min-height: 100%;">
+		<div class="col-xs-12 col-md-8 col-lg-9" style="border: 2px solid black; height: 100%">
+			<div id="full" class="panel panel-primary" style="height: 100%">
+				<div id="full4" class="panel-heading"><i style="padding: 4px; margin-left: 18px; height: 100%"><b>GAME</b></i>
+					<input id="fullb" type="button" onClick="fullscreen()" value="Full Screen" style="color: white;float: right;margin-right: 18px; border: 0; outline: 0; border-radius: 20px; padding: 0px 8px; background: black"></div>
+				<div id="full2" class="panel-body" style="min-height: 420px;word-wrap: break-word; height: 100%">
+					<div id="full3" class="dragscroll" style="height: 100%; width: 100%; overflow: scroll;cursor : -webkit-grab">
+						<canvas id="springydemo" width="1000" height="480" />
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div>
+			<div class="col-xs-12 col-md-4 col-lg-3" style="border: 2px solid black; height: 100%; min-height: 100%; overflow-y: hidden">
+				<div style="height: 100%" class="panel panel-success">
+					<div style="height: 100%" class="panel-heading text-center" ><i style="margin-left: 18px"><b><label id="username" style="max-width: 140px; word-wrap: break-word">LINK IT!</label></b></i></div>
+					<div class="panel-body" style="min-height: 100%;word-wrap: break-word">
+						<div style="text-align: center">
+							You have <label id="i" value='0' style="max-width: 140px; word-wrap: break-word">0</label> Points
+						</div>
+						<br>
+						<div style="text-align: center">
+							<label style="color: black;padding-right: 6px">Time Left:  </label><label id="mycounter" style="color: black;padding-right: 6px"></label><label style="color: black">  Seconds</label>
+						</div>
+						<div style="height: 100%;" class="form-group">
+							<div style="text-align:center">
+								<label>Enter your suggestion</label>
+								<input  id="inputsm" type="text" placeholder="Eg:Will Smith" class="form-control input-sm"><br>
+								<input id= "enter" type="button" onClick="enter()" value="Enter" style="border: 0; outline: 0; border-radius: 20px; background: black; color: white; padding: 4px 8px">
+							</div>
+						</div>
+						<div style="height: 100%" class="panel panel-warning">
+							<div class="panel-heading text-center"><i style="margin-left: 18px"><b>PAST GUESSES</b></i>
+							</div>
+							<div id="scrollpanel" class="panel-body" style="overflow-y:auto;height: 100px;max-height:150px;word-wrap: break-word">
+								<div id="past">
+									<ol type="1"></ol>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-primary" style="margin-left: 16px; margin-right: 16px;height: 100%">
+						<div class="panel-heading text-center"><i style="margin-left: 18px"><b>LEADERBOARD</b></i>
+						</div>
+						<div id="scrollpanel2" class="panel-body" style="overflow-y:auto;height: 100px;max-height:150px;word-wrap: break-word">
+							<div id="leader">
+								<ol type="1"></ol>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footer" style="border: 2px solid black;height: 45px">
+			<H5 style="margin-left: 18px"><i><b style="color: white;background-color: grey">LINK IT!</b></i>
+				<input type="button" onClick="menu()" value="Menu" style="float: right;margin-right: 18px; border: 0; outline: 0; border-radius: 20px; background: black; color: white; padding: 4px 8px">
+				<input type="button" onClick="changecategory()" value="Change Category" style="float: right;margin-right: 18px; border: 0; outline: 0; border-radius: 20px; background: black; color: white; padding: 4px 8px">
+				<input type="button" onClick="music()" class="mybutton" name="music" style="float: right">
+
+			</H5>
+		</div>
+	</div>
+</div>
+<div id="snackbar">You have already guessed this</div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "serve": "firebase serve --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "dependencies": {
+    "firebase-admin": "~5.12.0",
+    "firebase-functions": "^1.0.1",
+    "firebase":"~4.13.1",
+    "express":"~4.16.3",
+    "arraylist":"~0.1.0",
+    "graph-data-structure":"~1.8.0",
+    "random-number":"~0.0.9",
+    "xmlhttprequest":"~1.8.0"
+
+  },
+  "private": true
+}

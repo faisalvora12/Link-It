@@ -62,6 +62,7 @@ dbLoginRef.once("value")
     });
 
 function makeRandom() {
+    graph = new Graph;
     var gen = rn.generator({
         integer: true
     });
@@ -116,9 +117,11 @@ app.get('*/default', (request, response) => {
 
 app.post('*/guess/:suggestion', function (req, res) {
     const sugg = req.params.suggestion;
+    setTimeout(function(){
     var nodes = graph.nodes();
     for(var node in nodes)
     {
+        console.log(nodes[node]+"  "+sugg)
         let newSugg = sugg.trim();
         if(nodes[node].toUpperCase() === newSugg.toUpperCase()) {
             console.log('got it')
@@ -134,26 +137,46 @@ app.post('*/guess/:suggestion', function (req, res) {
         }
     }
     res.status(404);
-    res.send();
+    res.send();},400);
 });
 
 
 
 app.post('*/score/:score', function (req, res) {
-    addScoreToDatabase(req.params.score);
+   // addScoreToDatabase(req.params.score,req);
+    var ref = firebase.database().ref("Scores/"+currentUser);
+    ref.set(req.params.score);
     res.status(200);
     res.send();
 });
 
+app.get('*/getscores', function (req, res) {
+    var str = "";
+    var curDb = firebase.database().ref("Scores");
+    curDb.once("value")
+        .then(function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+                var key = childSnapshot.key;
+                var value = childSnapshot.val();
+                str += key+" "+value+"^";
+            });
+        });
+        setTimeout(function () {
+            res.status(200);
+            res.send(str);
+        },600)
+
+
+});
+
 
 app.post('*/login/:username/:password', function (req, res) {
-    currentUser = req.params.username;
+    app.set('uname',req.params.username);
     var status = checkSignIn(req.params.username, req.params.password);
     if (status === false) {
         res.status(404);
     }
     else {
-        currentUser = req.params.username;
         res.status(200);
     }
     res.send();
@@ -192,6 +215,7 @@ function checkSignIn(name, password) {
     for (var entry of loginMap.entries()) {
         if (entry[0] === name) {
             if (entry[1] === password) {
+                currentUser = entry[0];
                 return true;
             }
         }
@@ -215,11 +239,12 @@ function getAdjList(node) {
     return graph.adjacent(node);
 }
 
-function addScoreToDatabase(score){
+function addScoreToDatabase(score,req){
     console.log('in score check')
     console.log(currentUser);
     var ref = firebase.database().ref("Scores/"+currentUser);
     ref.set(score);
+
 }
 
 exports.app = functions.https.onRequest(app);
