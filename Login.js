@@ -1,7 +1,6 @@
 var username;
 var password;
 var mess;
-
 function signin() {
     username = document.getElementById("username").value.toString();
     password = document.getElementById("password").value.toString();

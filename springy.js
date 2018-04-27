@@ -49,13 +49,20 @@
         // this.data.type
     };
 
-    Graph.prototype.addNode = function(node) {
-        if (!(node.id in this.nodeSet)) {
-            this.nodes.push(node);
+    Graph.prototype.addNode = function(node,name2) {
+        if(name2===0) {
+            if (!(node.id in this.nodeSet)) {
+                this.nodes.push(node);
+            }
+            this.nodeSet[node.id] = node;
         }
+        else {
+            if (!(name2 in this.nodeSet)) {
+                this.nodes.push(node);
+            }
+            this.nodeSet[name2] = node;
 
-        this.nodeSet[node.id] = node;
-
+        }
         this.notify();
         return node;
     };
@@ -63,11 +70,15 @@
     Graph.prototype.addNodes = function() {
         // accepts variable number of arguments, where each argument
         // is a string that becomes both node identifier and label
-        for (var i = 0; i < arguments.length; i++) {
-            var name = arguments[i];
-            var node = new Node(name, {label:name});
-            this.addNode(node);
-        }
+        //for (var i = 0; i < arguments.length; i++) {
+            var name = arguments[0];
+            var name2 = arguments[1];
+            if(name2===0)
+                var node = new Node(name, {label:name});
+            else
+                var node = new Node(name2, {label:name});
+        this.addNode(node,name2);
+        //}
     };
 
     Graph.prototype.addEdge = function(edge) {
@@ -321,7 +332,7 @@
 
     Layout.ForceDirected.prototype.spring = function(edge) {
         if (!(edge.id in this.edgeSprings)) {
-            var length = (edge.data.length !== undefined) ? edge.data.length : 1.0;
+            var length = (edge.data.length !== undefined) ? edge.data.length : 0.1;
 
             var existingSpring = false;
 
