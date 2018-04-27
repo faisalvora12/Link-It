@@ -397,16 +397,11 @@ function fullscreen() {
         //Create an input type dynamically.
         var element = document.createElement("input");
 
-//Create button
+//Create Labels
         var button = document.createElement("input");
-        //Create button
- //       var label = document.createElement("label");
 
 //Assign different attributes to the element.
-        /*label.setAttribute("id", "del3");
-        label.setAttribute("value", "Enter your suggestion");
-        label.setAttribute("style", "color: white;height:100px;width:100px");
-*/
+
 
         button.setAttribute("type", "button");
         button.setAttribute("onclick", "enter();");
@@ -423,7 +418,6 @@ function fullscreen() {
         var foo = document.getElementById("full4");
 
 //Append the element in page (in span).
-        foo.appendChild(label);
         foo.appendChild(button);
         foo.appendChild(element);
         var input = document.getElementById("del1");
@@ -449,7 +443,6 @@ function exitHandler() {
         document.getElementById("fullb").style.visibility= "visible";
         $("#del1").remove();
         $("#del2").remove();
-       // $("#del3").remove();
     }
 }
 function snack() {
