@@ -10,7 +10,7 @@ body{
 }
 
 .instructionsbox{
- width: 50%;
+ width: 30%;
   height: 56%;
   background: #000;
   color: #FFFFFF;
@@ -43,6 +43,8 @@ h1{
 .instructionsbox input[type="button"]{
   border: 0;
   outline: 0;
+  width: 20%;
+  align: center;
   border-radius: 20px;
   background: #41e7ee;
   margin-bottom: 20px;
