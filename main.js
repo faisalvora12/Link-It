@@ -11,7 +11,7 @@ $('button').click(function(e){
 });
 
 
-var t = 5;
+var t = 1000;
 function onTimer() {
     var minutes=Math.floor(t/60);
     var seconds=t%60;
@@ -77,7 +77,6 @@ window.addEventListener('load', function() {
         var request = new XMLHttpRequest();
         request.onreadystatechange = function() {
             if (request.readyState == 4 && request.status==200) {
-                //alert(request.responseText);
                 var connections = request.responseText.split("^");
                 pool.push("!"+connections[0].trim());
                 for(var i=1;i<connections.length;i++)
@@ -86,13 +85,13 @@ window.addEventListener('load', function() {
                     poolSize++;
 
                 }
-                graph.addNodes(toTitleCase(connections[0]).trim());
+                graph.addNodes(toTitleCase(connections[0]).trim(),0);
                 for(var i=1;i<connections.length;i++)
                 {
+                   // alert(connections[i]);
                     var hidden=hide(connections[i].trim());
-                    //alert(connections.length);
-                    graph.addNodes(hidden);
-                    graph.addEdges([toTitleCase(connections[0]).trim(),hidden]);
+                    graph.addNodes(hidden,connections[i].trim());
+                    graph.addEdges([toTitleCase(connections[0]).trim(),connections[i]]);
                 }
                 onTimer();
             }
@@ -113,7 +112,7 @@ function hide(sug)
 {
     var count=0;
     var hidden="(";
-    //alert(sug.length);
+
     for(var i=0;i<sug.length;i++)
     {
         if(sug.charAt(i)!=' ') {
@@ -127,9 +126,6 @@ function hide(sug)
 
     hidden=hidden+count+")";
     return hidden;
-}
-function hint() {
-    alert("I am an alert box!");
 }
 
 function enter() { //documentation for function is after the function ends
@@ -153,26 +149,39 @@ document.getElementById("del1").value = "";
                 }
             }
             if(repeat!=1) {
-                var foo = document.getElementById("past");
-                var li = document.createElement("li");
-                var text = document.createTextNode(x);
-                li.setAttribute("style", "color:green");
-                li.appendChild(text);
-                foo.appendChild(li);
-                li.scrollIntoView();
-
                 var y = parseInt(document.getElementById('i').textContent);//score
                 document.getElementById('i').textContent = y + t;
-
+                var display=0;
                 connections = request.responseText.split("^");
                 for (var i = 0; i < pool.length; i++) {
                     if (pool[i] === (x.toUpperCase().trim())) {//add the suggestion in the graph if it matches the word in pool
                         pool[i] = "!" + pool[i];//mark the word added as ! to denote that it is open
+                        var foo = document.getElementById("past");
+                        var li = document.createElement("li");
+                        var text = document.createTextNode(x);
+                        li.setAttribute("style", "color:green");
+                        li.appendChild(text);
+                        foo.appendChild(li);
+                        li.scrollIntoView();
                         var hidden = hide(toTitleCase(x.trim()));
-                        removenodee(hidden);
-                        graph.addNodes(toTitleCase(x.trim()));//add the trimmed and titled cases suggestion to the graph
+                        removenodee(hidden,toTitleCase(x.trim()));
+                        graph.addNodes(toTitleCase(x.trim()),0);//add the trimmed and titled cases suggestion to the graph
+                    }
+                    else
+                    {
+                        display++;
                     }
                     console.log(pool[i] + " ");//debugging
+                }
+                if(display===pool.length)
+                {
+                    var foo = document.getElementById("past");
+                    var li = document.createElement("li");
+                    var text = document.createTextNode(x);
+                    li.setAttribute("style", "color:red");
+                    li.appendChild(text);
+                    foo.appendChild(li);
+                    li.scrollIntoView();
                 }
 
 
@@ -187,7 +196,7 @@ document.getElementById("del1").value = "";
                                     check = true;
                             }
                             if (!check)
-                                graph.addNodes(toTitleCase(pool[j].trim()));
+                                graph.addNodes(toTitleCase(pool[j].trim()),0);
                             graph.addEdges([toTitleCase(x.trim()), toTitleCase(connections[i])]);
                             flag = true;
                             //  continue;
@@ -199,11 +208,11 @@ document.getElementById("del1").value = "";
                         if (connections[i].length > 0) {
                             pool.push(connections[i].trim());
                             //add the connections in the hidden format to graph
-                            // alert(connections[i]);
+
 
                             var hidden = hide(connections[i]);
-                            graph.addNodes(hidden);
-                            graph.addEdges([toTitleCase(x).trim(), hidden]);
+                            graph.addNodes(hidden,connections[i]);
+                            graph.addEdges([toTitleCase(x).trim(), connections[i]]);
                             //added the connection to the graph and added the edge
                             console.log("Added: " + connections[i]);
                             poolSize++;
@@ -243,12 +252,13 @@ document.getElementById("del1").value = "";
 /*
        *
        ** REMOVE element*/
-        function removenodee(sug) {
+        function removenodee(sug,x) {
             var nodeto;
             for (var i = graph.nodes.length - 1; i >= 0; i--) {
-                if (graph.nodes[i].id == sug)
+                //alert(graph.nodes[i].id+"   "+x.toUpperCase());
+                if (graph.nodes[i].id == x.toUpperCase()){
                     nodeto = graph.nodes[i];
-
+                }
             }
             graph.removeNode(nodeto);
         }
@@ -304,8 +314,6 @@ function music() {
         audio.pause();
 }
 
-
-
 var dis=0;
 function menu() {
     bootbox.confirm({
@@ -331,6 +339,29 @@ function menu() {
                     bootbox.hideAll()
                 });
 
+            }
+        }
+    });
+
+}
+function changecategory() {
+    bootbox.confirm({
+        message: "Are you sure you want to change the category? Your work will be lost",
+        buttons: {
+            confirm: {
+                label: 'Yes',
+                className: 'btn-success'
+            },
+            cancel: {
+                label: 'No',
+                className: 'btn-danger'
+            }
+        },
+        callback: function (result) {
+            console.log('This was logged in the callback: ' + result);
+            if(result==true) {
+                document.getElementById("past").innerHTML="";
+                location.replace('main.html');
             }
         }
     });
@@ -366,28 +397,35 @@ function fullscreen() {
         //Create an input type dynamically.
         var element = document.createElement("input");
 
-//Create Labels
+//Create button
         var button = document.createElement("input");
+        //Create button
+ //       var label = document.createElement("label");
 
 //Assign different attributes to the element.
-        element.setAttribute("type", "text");
-        element.setAttribute("id", "del1");
-        element.setAttribute("name", "Test Name");
-        element.setAttribute("style", "width:200px;color:black");
+        /*label.setAttribute("id", "del3");
+        label.setAttribute("value", "Enter your suggestion");
+        label.setAttribute("style", "color: white;height:100px;width:100px");
+*/
 
         button.setAttribute("type", "button");
         button.setAttribute("onclick", "enter();");
         button.setAttribute("value", "ENTER");
-        button.setAttribute("style", "color: white;float: right;margin-right: 18px; border: 0; outline: 0; border-radius: 20px; padding: 0px 8px; background: black");
+        button.setAttribute("style", "color: white;margin-right: 18px; border: 0; outline: 0; border-radius: 20px; padding: 0px 8px; background: black; float: right");
         button.setAttribute("id", "del2");
 
+        element.setAttribute("type", "text");
+        element.setAttribute("id", "del1");
+        element.setAttribute("name", "Test Name");
+        element.setAttribute("style", "width:200px;color:black;float:right");
 
 // 'foobar' is the div id, where new fields are to be added
         var foo = document.getElementById("full4");
 
 //Append the element in page (in span).
-        foo.appendChild(element);
+        foo.appendChild(label);
         foo.appendChild(button);
+        foo.appendChild(element);
         var input = document.getElementById("del1");
         input.addEventListener("keyup",function(event) {
             if (event.keyCode === 13) {
@@ -411,6 +449,7 @@ function exitHandler() {
         document.getElementById("fullb").style.visibility= "visible";
         $("#del1").remove();
         $("#del2").remove();
+       // $("#del3").remove();
     }
 }
 function snack() {
