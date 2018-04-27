@@ -1,6 +1,14 @@
 {
-	"hosting":{
-		"public":"public"
-	}
+  "hosting": {
+    "public": "public",
+    "redirects":[{
+      "source":"/",
+      "destination":"/Login.html",
+      "type":302
+    }],
+    "rewrites":[{
+	"source":"**",
+	"function":"app"
+}] 
 }
-
+}

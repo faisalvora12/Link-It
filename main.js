@@ -1,5 +1,5 @@
 var songcount=0;
-var audio = new Audio('boko.mp3');
+var audio = new Audio('Boko.mp3');
 var x;
 var pool = [];
 var poolSize = 0;
@@ -11,7 +11,7 @@ $('button').click(function(e){
 });
 
 
-var t = 5;
+var t = 20000;
 function onTimer() {
     var minutes=Math.floor(t/60);
     var seconds=t%60;
@@ -97,7 +97,7 @@ window.addEventListener('load', function() {
                 onTimer();
             }
         };
-        request.open('GET', 'http://localhost:3000/default', true);
+        request.open('GET', 'default', true);
         request.send();
 
 
@@ -235,7 +235,7 @@ document.getElementById("del1").value = "";
 
         }
     };
-    request.open('POST', 'http://localhost:3000/guess/'+x, true);
+    request.open('POST', 'guess/'+x, true);
     request.send();
 
 

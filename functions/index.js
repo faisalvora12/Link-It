@@ -1,3 +1,4 @@
+const functions = require('firebase-functions');
 const http = require('http'); //for http protocol
 const firebase = require('firebase'); //for database
 const fs = require('fs');
@@ -14,7 +15,6 @@ const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
  ================================================================================================================= */
 var loginMap = new Map();
 var graph;
-var currentUser = "";
 const app = express();
 const port = 3000;
 firebase.initializeApp({
@@ -23,16 +23,14 @@ firebase.initializeApp({
 });
 var categoryName;
 var dbCategoryRef;
-
+var currentUser = "";
 var categRef = firebase.database().ref();
 
 var categList = []
 var eachCategUniques;
 var numCategs = 0;
 var messageString = "";
-var gen = rn.generator({
-    integer: true
-});
+
 /*==============================================================================================================
 
  Creating category list from firebase
@@ -64,11 +62,14 @@ dbLoginRef.once("value")
     });
 
 function makeRandom() {
+    var gen = rn.generator({
+        integer: true
+    });
 
     var interval = setInterval(function () {
         do {
             categoryName = categList[gen(0, numCategs - 1, true)];
-        } while (categoryName === "Login");
+        } while (categoryName === "Login" || categoryName === "Scores");
         graph = Graph();
         messageString = categoryName.toUpperCase();
         eachCategUniques = new ArrayList;
@@ -100,21 +101,20 @@ function makeRandom() {
         clearInterval(interval);
     }, 600);
 }
+
 app.use(express.static(__dirname));
 
-app.get('/', (request, response) => {
-    response.sendFile(path.join(__dirname + '/Login.html'))
-});
 
-app.get('/default', (request, response) => {
+app.get('*/default', (request, response) => {
     makeRandom();
+
     setTimeout(function (){
         response.status(200);
         response.send(messageString)
-    },700);
+    },1000);
 });
 
-app.post('/guess/:suggestion', function (req, res) {
+app.post('*/guess/:suggestion', function (req, res) {
     const sugg = req.params.suggestion;
     var nodes = graph.nodes();
     for(var node in nodes)
@@ -125,7 +125,7 @@ app.post('/guess/:suggestion', function (req, res) {
             var list = getAdjList(newSugg.toUpperCase());
             var str="";
             for (var i in list) {
-                    str += list[i]+"^";
+                str += list[i]+"^";
             }
             console.log(str)
             res.status(200);
@@ -133,20 +133,21 @@ app.post('/guess/:suggestion', function (req, res) {
             return;
         }
     }
-   res.status(404);
-    res.send();
-});
-
-
-
-app.post('/score/:score/:username', function (req, res) {
-
     res.status(404);
     res.send();
 });
 
 
-app.post('/login/:username/:password', function (req, res) {
+
+app.post('*/score/:score', function (req, res) {
+    addScoreToDatabase(req.params.score);
+    res.status(200);
+    res.send();
+});
+
+
+app.post('*/login/:username/:password', function (req, res) {
+    currentUser = req.params.username;
     var status = checkSignIn(req.params.username, req.params.password);
     if (status === false) {
         res.status(404);
@@ -158,7 +159,7 @@ app.post('/login/:username/:password', function (req, res) {
     res.send();
 });
 
-app.post('/signup/:username/:password', function (req, res) {
+app.post('*signup*/:username/:password', function (req, res) {
     var status = checkSignUp(req.params.username, req.params.password);
     if (status === false) {
         res.status(404);
@@ -168,6 +169,11 @@ app.post('/signup/:username/:password', function (req, res) {
     }
     res.send();
 });
+
+app.get("*/test", (req,res)=>{
+    res.status(200)
+    res.send('sdfhklshdflalk')
+})
 
 app.listen(port, (err) => {
     if (err) {
@@ -191,7 +197,6 @@ function checkSignIn(name, password) {
         }
     }
     return false;
-
 }
 
 function checkSignUp(uname, password) {
@@ -200,9 +205,7 @@ function checkSignUp(uname, password) {
             return false;
         }
     }
-
     var ref = firebase.database().ref("Login/"+uname);
-
     ref.set(password);
     loginMap.set(uname, password);
     return true;
@@ -211,3 +214,12 @@ function checkSignUp(uname, password) {
 function getAdjList(node) {
     return graph.adjacent(node);
 }
+
+function addScoreToDatabase(score){
+    console.log('in score check')
+    console.log(currentUser);
+    var ref = firebase.database().ref("Scores/"+currentUser);
+    ref.set(score);
+}
+
+exports.app = functions.https.onRequest(app);

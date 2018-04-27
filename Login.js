@@ -1,13 +1,14 @@
 var username;
 var password;
 var mess;
+
 function signin() {
     username = document.getElementById("username").value.toString();
     password = document.getElementById("password").value.toString();
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (request.readyState === 4 && request.status === 200) {
-            location.replace('menu.html');
+            location.replace('Menu.html');
         }
         else if(request.status === 404 && request.readyState===4)
         {
@@ -16,7 +17,7 @@ function signin() {
             alert('Invalid username or password');
         }
     };
-    request.open('POST', 'http://localhost:3000/login/'+username.toString()+"/"+password.toString(), true);
+    request.open('POST', 'login/'+username.toString()+"/"+password.toString(), true);
     request.send();
 
 }
@@ -34,7 +35,7 @@ function signup() {
             alert('Username taken');
         }
     };
-    request.open('POST', 'http://localhost:3000/signup/'+username.toString()+"/"+password.toString(), true);
+    request.open('POST', 'signup/'+username.toString()+"/"+password.toString(), true);
     request.send();
 
 }
